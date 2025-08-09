@@ -40,7 +40,7 @@ public class UserService {
         emailService.sendEmail(
         userRequest.getEmail(),
         "Welcome to Ticketing System",
-        "Hi " + user.getName() + ",\n\nYour signup was successful!\n\nRegards,\nTicketing System"
+        "Hi " + userRequest.getName() + ",\n\nYour signup was successful!\n\nRegards,\nTicketing System"
        );
         return userRepository.save(user);
 

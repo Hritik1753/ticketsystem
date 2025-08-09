@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ticketingsystem.demo.entity.Ticket;
 import ticketingsystem.demo.entity.TicketStatus;
+import ticketingsystem.demo.entity.User;
 import ticketingsystem.demo.repository.CommentRepository;
 import ticketingsystem.demo.repository.TicketRepository;
+import ticketingsystem.demo.repository.UserRepository;
+
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +22,12 @@ public class TicketService {
 
     @Autowired
     private CommentRepository commentRepository;
+     
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private EmailService emailService;
      
     public Ticket createTicket(Ticket ticket) {
         return ticketRepository.save(ticket);
@@ -64,6 +73,15 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
         ticket.setAssignedToId(agentId);
         ticket.setUpdatedAt(LocalDateTime.now());
+        
+        User agent = userRepository.findById(agentId).orElseThrow();
+            // Send email to agent
+        emailService.sendEmail(
+        agent.getEmail(),
+        "New Ticket Assigned",
+        "Hi " + agent.getName() + ",\n\nYou have been assigned ticket #" + ticket.getId() +
+        " with subject: " + ticket.getTitle() + "\n\nRegards,\nTicketing System"
+        );
         return ticketRepository.save(ticket);
     }
 
@@ -73,6 +91,19 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
         ticket.setStatus(status);
         ticket.setUpdatedAt(LocalDateTime.now());
+       
+            // Fetch user details using userId from ticket
+        User user = userRepository.findById(ticket.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+            // Send email to ticket owner
+        emailService.sendEmail(
+        user.getEmail(),
+        "Ticket Status Updated",
+        "Hi " + user.getName() + ",\n\nYour ticket #" + ticket.getId() +
+        " status has been changed to: " + status + "\n\nRegards,\nTicketing System"
+         );
+
         return ticketRepository.save(ticket);
     }
 }

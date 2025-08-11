@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: spring-boot-app
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        sync: false   # false means you'll set it in Render's dashboard securely
+    autoDeploy: true

@@ -1,0 +1,15 @@
+# Ignore environment files
+.env
+*.env
+
+# Ignore IDE/editor settings
+.idea
+.vscode
+
+# Ignore build artifacts
+target
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

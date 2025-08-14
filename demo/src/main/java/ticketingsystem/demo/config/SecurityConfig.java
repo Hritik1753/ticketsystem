@@ -34,7 +34,6 @@ public class SecurityConfig {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:3000") // frontend origin
                     .allowedOrigins("https://ticketingsytem-frontend.vercel.app/")
                     .allowedMethods("*");
         }
